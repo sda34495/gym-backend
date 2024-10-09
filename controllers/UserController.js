@@ -23,7 +23,15 @@ const signup = async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ message: "User created successfully" });
+    const token = jwt.sign(
+      { userId: user._id, type: user.type },
+      "your_jwt_secret"
+    );
+    res.status(201).json({
+      message: "User created successfully",
+      user: { email: user.email, name: user.name, type: user.type },
+      token,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -48,7 +56,13 @@ const login = async (req, res) => {
       "your_jwt_secret"
     );
 
-    res.status(200).json({ token, message: "Logged in successfully" });
+    res
+      .status(200)
+      .json({
+        token,
+        user: { email: user.email, name: user.name, type: user.type },
+        message: "Logged in successfully",
+      });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
