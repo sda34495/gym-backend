@@ -3,7 +3,7 @@ const Coach = require("../models/Coach");
 const createCoach = async (req, res) => {
   const {
     name,
-    age,
+    dob,
     role,
     homeTown,
     experience,
@@ -17,7 +17,7 @@ const createCoach = async (req, res) => {
   try {
     const coach = new Coach({
       name,
-      age,
+      dob,
       role,
       homeTown,
       experience,

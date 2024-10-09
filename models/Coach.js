@@ -12,8 +12,8 @@ const coachSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    age: {
-      type: Number,
+    dob: {
+      type: Date, // Changed from String to Date
       required: true,
     },
     role: {
@@ -83,6 +83,10 @@ const coachSchema = new mongoose.Schema(
         type: [Number], // [longitude, latitude]
         required: true,
       },
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
     },
   },
   {
