@@ -4,46 +4,46 @@ const Coach = require("../models/Coach"); // Assuming Coach model is in models f
 const searchFighters = async (req, res) => {
   try {
     const {
-      sport,
-      class: classType,
-      minYears,
-      maxYears,
-      homeTown,
-      minWeight,
-      maxWeight,
-      minHeight,
-      maxHeight,
-      lat,
-      lon,
+      sport, // Sport filter
+      class: classType, // Class filter
+      minWeight, // Minimum weight
+      maxWeight, // Maximum weight
+      minHeight, // Minimum height
+      maxHeight, // Maximum height
+      homeTown, // Home town filter
+      lat, // Latitude for location-based filtering
+      lon, // Longitude for location-based filtering
       within, // Distance in miles
     } = req.query;
 
-    const query = { isActive: true, isDeleted: false };
+    const query = {
+      isActive: true,
+      isDeleted: false,
+    };
 
     // If sport filter is present
     if (sport) {
-      query.sport = sport; // Assumes `sport` is a property in schema
+      query.sports = {
+        $elemMatch: {
+          sport: sport,
+        },
+      };
     }
 
     // If class filter is present
     if (classType) {
-      query.class = classType;
+      query.sports = {
+        ...query.sports,
+        $elemMatch: {
+          ...query.sports.$elemMatch,
+          class: classType,
+        },
+      };
     }
 
-    // If hometown filter is present
+    // Filter by hometown
     if (homeTown) {
       query.homeTown = homeTown;
-    }
-
-    // Filter by experience range (years)
-    if (minYears || maxYears) {
-      query["experience.years"] = {};
-      if (minYears) {
-        query["experience.years"].$gte = parseInt(minYears, 10);
-      }
-      if (maxYears) {
-        query["experience.years"].$lte = parseInt(maxYears, 10);
-      }
     }
 
     // Filter by weight range
@@ -79,9 +79,9 @@ const searchFighters = async (req, res) => {
       };
     }
 
-    // Fetch members based on the constructed query
-    const members = await Member.find(query);
-    res.status(200).json(members);
+    // Fetch fighters based on the constructed query
+    const fighters = await Member.find(query);
+    res.status(200).json(fighters);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
@@ -104,7 +104,7 @@ const searchCoach = async (req, res) => {
       within, // Distance in miles
     } = req.query;
 
-    const query = {  }; // Query base to find active, non-deleted coaches
+    const query = {}; // Query base to find active, non-deleted coaches
 
     // If role filter is present
     if (role) {

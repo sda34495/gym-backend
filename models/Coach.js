@@ -17,9 +17,17 @@ const coachSchema = new mongoose.Schema(
       required: true,
     },
     role: {
-      type: String,
+      type: [String], // Allow multiple roles
+      enum: [
+        "Head Coach",
+        "Coach",
+        "Personal Trainer",
+        "Administrator",
+        "S&C Coach",
+        "Physiotherapist",
+        "Doctor",
+      ],
       required: true,
-      trim: true,
     },
     homeTown: {
       type: String,
@@ -39,29 +47,32 @@ const coachSchema = new mongoose.Schema(
     height: {
       type: Number,
       required: true,
-      trim: true,
-    }, //cm
+    }, // in cm
     weight: {
       type: Number,
       required: true,
-      trim: true,
-    }, // lbs
+    }, // in lbs or kg
     stance: {
       type: String,
+      enum: ["orthodox", "southpaw", "switcher"],
       required: true,
-      trim: true,
-    },
-    discipline: {
-      type: String,
-      required: true,
-      trim: true,
     },
     sport: {
-      type: String,
+      type: [String], // Allow multiple sports
+      enum: [
+        "Boxing",
+        "MMA",
+        "BJJ",
+        "Kickboxing",
+        "Muay Thai",
+        "Judo",
+        "Karate",
+        "Wrestling",
+        "Taekwondo",
+      ],
       required: true,
     },
     location: {
-      // GeoJSON format to store coordinates
       type: {
         type: String,
         enum: ["Point"],

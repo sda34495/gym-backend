@@ -82,7 +82,8 @@ const editListing = async (req, res) => {
     const userId = req.userId;
 
     const post = await Post.findById(postId);
-
+    console.log(userId, post.userId.toString());
+    console.log(post.userId.toString() === userId.toString());
     // Check if post belongs to user
     if (!post || post.userId.toString() !== userId) {
       return res
@@ -124,7 +125,7 @@ const deleteListing = async (req, res) => {
 // Create New Listing
 const createListing = async (req, res) => {
   try {
-    const { subject, body, postType, sport, coordinates } = req.body;
+    const { subject, body, postType, sport, location } = req.body;
     const userId = req.userId;
 
     const newPost = new Post({
@@ -132,16 +133,14 @@ const createListing = async (req, res) => {
       body,
       postType,
       sport,
-      location: {
-        type: "Point",
-        coordinates: [coordinates.longitude, coordinates.latitude], // GeoJSON format
-      },
+      location: location,
       userId,
     });
 
     await newPost.save();
     res.status(201).json(newPost);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error creating listing", error });
   }
 };

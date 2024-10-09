@@ -10,7 +10,6 @@ const createCoach = async (req, res) => {
     height,
     weight,
     stance,
-    discipline,
     sport,
     location,
   } = req.body;
@@ -25,7 +24,6 @@ const createCoach = async (req, res) => {
       height,
       weight,
       stance,
-      discipline,
       gymId,
       sport,
       location,

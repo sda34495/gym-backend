@@ -95,12 +95,19 @@ const editMember = async (req, res) => {
   const { id } = req.params; // Get the member ID from the URL
   const {
     name,
+    dob,
+    homeTown,
+    startDate,
     class: memberClass,
     experience,
     height,
     weight,
     stance,
     isActive,
+    reach,
+    sports, // An array of sports the member competes in
+    records, // Wins, losses, and draws for each sport
+    location, // GeoJSON location object (coordinates)
   } = req.body; // Get editable fields from the request body
 
   try {
@@ -113,12 +120,25 @@ const editMember = async (req, res) => {
 
     // Update only the fields that are provided
     if (name) member.name = name;
+    if (dob) member.dob = dob;
+    if (homeTown) member.homeTown = homeTown;
+    if (startDate) member.startDate = startDate;
     if (memberClass) member.class = memberClass;
     if (experience) member.experience = experience;
     if (height) member.height = height;
     if (weight) member.weight = weight;
     if (stance) member.stance = stance;
+    if (reach) member.reach = reach;
     if (typeof isActive !== "undefined") member.isActive = isActive;
+
+    // If sports are provided, update the member's sports array
+    if (sports) member.sports = sports;
+
+    // If records are provided, update the records
+    if (records) member.records = records;
+
+    // If location is provided, update the location (GeoJSON coordinates)
+    if (location && location.coordinates) member.location = location;
 
     // Save the updated member
     await member.save();

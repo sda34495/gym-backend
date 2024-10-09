@@ -6,7 +6,7 @@ const {
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.post("/", authMiddleware, sendMessage); // Send a message
+router.post("/", authMiddleware, sendMessage); 
 router.get("/:userId", getMessages); // Retrieve messages for a user
 
 module.exports = router;
