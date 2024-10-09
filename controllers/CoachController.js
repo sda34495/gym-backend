@@ -12,6 +12,7 @@ const createCoach = async (req, res) => {
     stance,
     sport,
     location,
+    isActive,
   } = req.body;
   const gymId = req.userId;
   try {
@@ -27,6 +28,7 @@ const createCoach = async (req, res) => {
       gymId,
       sport,
       location,
+      isActive,
     });
 
     await coach.save();
