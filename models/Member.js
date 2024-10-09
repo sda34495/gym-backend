@@ -43,7 +43,7 @@ const memberSchema = new mongoose.Schema(
       {
         sport: {
           type: String,
-          required: true,
+          // required: true,
           enum: [
             "Boxing",
             "MMA",
@@ -58,7 +58,7 @@ const memberSchema = new mongoose.Schema(
         },
         class: {
           type: String,
-          required: true,
+          // required: true,
           enum: [
             "White collar",
             "Amateur",
@@ -85,7 +85,7 @@ const memberSchema = new mongoose.Schema(
       {
         sport: {
           type: String,
-          required: true,
+          // required: true,
           enum: [
             "Boxing",
             "MMA",
@@ -100,7 +100,7 @@ const memberSchema = new mongoose.Schema(
         },
         class: {
           type: String,
-          required: true,
+          // required: true,
         },
         wins: {
           type: Number,
