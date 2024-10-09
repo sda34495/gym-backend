@@ -8,95 +8,115 @@ const memberSchema = new mongoose.Schema(
       trim: true,
     },
     dob: {
-      type: String,
+      type: Date, // Changed from String to Date
       required: true,
-      trim: true,
     },
     startDate: {
-      type: String,
+      type: String, // Could use Date but restricted to month/year input
       required: true,
       trim: true,
-    },
-    age: {
-      type: Number,
-      required: true,
     },
     homeTown: {
-      type: String,
+      type: String, // Optional, if using location from map dropbox
       required: true,
       trim: true,
-    },
-    class: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    experience: {
-      years: {
-        type: Number,
-        required: true,
-      },
-      months: {
-        type: Number,
-        required: true,
-      },
     },
     height: {
-      type: Number,
+      type: Number, // Store in cm
       required: true,
-      trim: true,
-    }, //cm
+    },
     weight: {
-      type: Number,
+      type: Number, // Store in kg
       required: true,
-      trim: true,
-    }, // lbs
-    stance: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    isActive: {
-      type: Boolean,
-      required: true,
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
     },
     reach: {
+      type: Number, // Store in cm
+      required: true,
+    },
+    stance: {
       type: String,
+      enum: ["orthodox", "southpaw", "switcher"], // Ensure only these values are allowed
       required: true,
       trim: true,
     },
-    records: {
-      wins: {
-        type: Number,
-        required: true,
-        default: 0,
+    sports: [
+      {
+        sport: {
+          type: String,
+          required: true,
+          enum: [
+            "Boxing",
+            "MMA",
+            "BJJ",
+            "Kickboxing",
+            "Muay Thai",
+            "Judo",
+            "Karate",
+            "Wrestling",
+            "Taekwondo",
+          ], // Restrict to approved sports
+        },
+        class: {
+          type: String,
+          required: true,
+          enum: [
+            "White collar",
+            "Amateur",
+            "Professional",
+            "White",
+            "Blue",
+            "Purple",
+            "Brown",
+            "Black",
+            "N Class",
+            "C Class",
+            "B Class",
+            "A Class",
+            "Yellow",
+            "Orange",
+            "Green",
+            "Red",
+            "N/A",
+          ],
+        },
       },
-      losses: {
-        type: Number,
-        required: true,
-        default: 0,
+    ],
+    records: [
+      {
+        sport: {
+          type: String,
+          required: true,
+          enum: [
+            "Boxing",
+            "MMA",
+            "BJJ",
+            "Kickboxing",
+            "Muay Thai",
+            "Judo",
+            "Karate",
+            "Wrestling",
+            "Taekwondo",
+          ], // Sport-specific records
+        },
+        class: {
+          type: String,
+          required: true,
+        },
+        wins: {
+          type: Number,
+          default: 0,
+        },
+        losses: {
+          type: Number,
+          default: 0,
+        },
+        draws: {
+          type: Number,
+          default: 0,
+        },
       },
-      draws: {
-        type: Number,
-        required: true,
-        default: 0,
-      },
-    },
-    gymId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-
-    sport: {
-      type: String,
-    },
+    ],
     location: {
-      // GeoJSON format to store coordinates
       type: {
         type: String,
         enum: ["Point"],
@@ -107,6 +127,19 @@ const memberSchema = new mongoose.Schema(
         type: [Number], // [longitude, latitude]
         required: true,
       },
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    gymId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Gym", // Assuming it's associated with a Gym, previously 'User'
+      required: true,
     },
   },
   {

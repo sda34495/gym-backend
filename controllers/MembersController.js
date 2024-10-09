@@ -36,7 +36,7 @@ const createMember = async (req, res) => {
       records,
       gymId,
       location,
-      sport: sports,
+      sports: sports,
     });
 
     await member.save();

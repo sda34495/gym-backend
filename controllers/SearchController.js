@@ -104,7 +104,7 @@ const searchCoach = async (req, res) => {
       within, // Distance in miles
     } = req.query;
 
-    const query = { isActive: true, isDeleted: false }; // Query base to find active, non-deleted coaches
+    const query = {  }; // Query base to find active, non-deleted coaches
 
     // If role filter is present
     if (role) {
