@@ -97,5 +97,21 @@ const editUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+const getClubDetails = async (req, res) => {
+  const userId = req.userId;
 
-module.exports = { signup, login, editUser };
+  try {
+    let user = await User.findById(userId);
+
+    // Destructure to remove the password field from the user object
+    const { password, ...userObject } = user._doc; // Ensure to access the raw data using `_doc`
+
+    res
+      .status(200)
+      .json({ message: "User fetched successfully", user: userObject });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+module.exports = { signup, login, editUser, getClubDetails };
