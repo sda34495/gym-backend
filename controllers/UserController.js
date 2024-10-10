@@ -56,20 +56,18 @@ const login = async (req, res) => {
       "your_jwt_secret"
     );
 
-    res
-      .status(200)
-      .json({
-        token,
-        user: { email: user.email, name: user.name, type: user.type },
-        message: "Logged in successfully",
-      });
+    res.status(200).json({
+      token,
+      user: { email: user.email, name: user.name, type: user.type },
+      message: "Logged in successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
 
 const editUser = async (req, res) => {
-  const { name, address, sports, manager } = req.body;
+  const { name, address, sports, manager, headCoach } = req.body;
   const userId = req.userId; // Assuming you have middleware that sets userId from JWT
 
   try {
@@ -82,6 +80,7 @@ const editUser = async (req, res) => {
           address: address || undefined,
           sports: sports || undefined,
           manager: manager,
+          headCoach: headCoach,
         },
       },
       { new: true, runValidators: true } // return the updated user, validate input
