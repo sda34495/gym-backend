@@ -14,6 +14,10 @@ const searchFighters = async (req, res) => {
       lat, // Latitude for location-based filtering
       lon, // Longitude for location-based filtering
       within, // Distance in miles
+      minAge, // Minimum age
+      maxAge, // Maximum age
+      minExperienceYears, // Minimum years of experience filter
+      maxExperienceYears, // Maximum years of experience filter
     } = req.query;
 
     const query = {
@@ -68,6 +72,31 @@ const searchFighters = async (req, res) => {
       }
     }
 
+    // Filter by age range
+    if (minAge || maxAge) {
+      const currentDate = moment(); // Get current date
+
+      if (minAge) {
+        const maxDob = currentDate.subtract(minAge, "years").toDate(); // Date of birth should be before this date
+        query.dob = { ...query.dob, $lte: maxDob };
+      }
+      if (maxAge) {
+        const minDob = currentDate.subtract(maxAge, "years").toDate(); // Date of birth should be after this date
+        query.dob = { ...query.dob, $gte: minDob };
+      }
+    }
+
+    // Filter by experience range (years)
+    if (minExperienceYears || maxExperienceYears) {
+      query["experience.years"] = {};
+      if (minExperienceYears) {
+        query["experience.years"].$gte = parseInt(minExperienceYears, 10);
+      }
+      if (maxExperienceYears) {
+        query["experience.years"].$lte = parseInt(maxExperienceYears, 10);
+      }
+    }
+
     // If location (lat, lon) and distance (within) filter is present
     if (lat && lon && within) {
       const longitude = parseFloat(lon);
@@ -93,15 +122,17 @@ const searchCoach = async (req, res) => {
     const {
       role, // Role filter (e.g., head coach, assistant coach)
       sport, // Sport filter
-      experienceYears, // Minimum years of experience
-      experienceMonths, // Minimum months of experience
+      minExperienceYears, // Minimum years of experience filter
+      maxExperienceYears, // Maximum years of experience filter
       weightMin, // Minimum weight filter
       weightMax, // Maximum weight filter
       heightMin, // Minimum height filter
       heightMax, // Maximum height filter
-      lat,
-      lon,
+      lat, // Latitude
+      lon, // Longitude
       within, // Distance in miles
+      minAge, // Minimum age filter
+      maxAge, // Maximum age filter
     } = req.query;
 
     const query = {}; // Query base to find active, non-deleted coaches
@@ -115,11 +146,15 @@ const searchCoach = async (req, res) => {
       query.sport = sport; // Assumes `sport` is a property in schema
     }
 
-    if (experienceYears) {
-      query["experience.years"] = { $gte: parseInt(experienceYears, 10) };
-    }
-    if (experienceMonths) {
-      query["experience.months"] = { $gte: parseInt(experienceMonths, 10) };
+    // Filter by experience range (years)
+    if (minExperienceYears || maxExperienceYears) {
+      query["experience.years"] = {};
+      if (minExperienceYears) {
+        query["experience.years"].$gte = parseInt(minExperienceYears, 10);
+      }
+      if (maxExperienceYears) {
+        query["experience.years"].$lte = parseInt(maxExperienceYears, 10);
+      }
     }
 
     if (weightMin || weightMax) {
@@ -139,6 +174,20 @@ const searchCoach = async (req, res) => {
       }
       if (heightMax) {
         query.height.$lte = parseInt(heightMax, 10);
+      }
+    }
+
+    // Filter by age range
+    if (minAge || maxAge) {
+      const currentDate = moment(); // Get current date
+
+      if (minAge) {
+        const maxDob = currentDate.subtract(minAge, "years").toDate(); // Date of birth should be before this date
+        query.dob = { ...query.dob, $lte: maxDob };
+      }
+      if (maxAge) {
+        const minDob = currentDate.subtract(maxAge, "years").toDate(); // Date of birth should be after this date
+        query.dob = { ...query.dob, $gte: minDob };
       }
     }
 

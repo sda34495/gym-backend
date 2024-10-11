@@ -108,7 +108,7 @@ const getClubDetails = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "User fetched successfully", user: userObject });
+      .json({ message: "Details fetched successfully", user: userObject });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
