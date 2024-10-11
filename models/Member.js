@@ -141,6 +141,9 @@ const memberSchema = new mongoose.Schema(
       ref: "Gym", // Assuming it's associated with a Gym, previously 'User'
       required: true,
     },
+    profile_url: {
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -88,6 +88,9 @@ const coachSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    profile_url: {
+      type: String,
+    },
   },
   {
     timestamps: true,
