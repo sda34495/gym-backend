@@ -6,6 +6,7 @@ const {
   createListing,
   editListing,
   deleteListing,
+  getPost,
 } = require("../controllers/FeedsController");
 
 // Fetch public listings with filters and sorting
@@ -16,6 +17,7 @@ router.get("/my/", getMyListings);
 
 // Create a new listing
 router.post("/", createListing);
+router.get("/:id", getPost);
 
 // Edit a user's listing
 router.put("/posts/:id", editListing);

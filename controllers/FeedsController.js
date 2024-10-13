@@ -99,6 +99,15 @@ const editListing = async (req, res) => {
     res.status(500).json({ message: "Error editing listing", error });
   }
 };
+const getPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ message: "Error editing listing", error });
+  }
+};
 
 // Delete User's Listing
 const deleteListing = async (req, res) => {
@@ -151,4 +160,5 @@ module.exports = {
   getMyListings,
   editListing,
   getPublicListings,
+  getPost,
 };
