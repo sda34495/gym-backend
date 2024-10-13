@@ -16,6 +16,9 @@ const coachSchema = new mongoose.Schema(
       type: Date, // Changed from String to Date
       required: true,
     },
+    startDate: {
+      type: Date, // Changed from String to Date
+    },
     role: {
       type: [String], // Allow multiple roles
       enum: [

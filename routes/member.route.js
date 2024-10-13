@@ -6,13 +6,13 @@ const {
   deleteMember,
   editMember,
 } = require("../controllers/MembersController");
-const auth = require("../middlewares/authMiddleware");
+
 
 const router = express.Router();
 
 // Route to create a new member (Protected)
-router.post("/create", auth, createMember);
-router.put("/:id", auth, editMember);
+router.post("/create", createMember);
+router.put("/:id", editMember);
 
 // Route to get all members
 router.get("/", getMembers);
@@ -21,6 +21,6 @@ router.get("/", getMembers);
 router.get("/:id", getMemberById);
 
 // Route to delete a member (Protected)
-router.delete("/:id", auth, deleteMember);
+router.delete("/:id", deleteMember);
 
 module.exports = router;

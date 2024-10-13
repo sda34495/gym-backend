@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const connectDb = require("./config/Config.js");
 
-
 const userRoutes = require("./routes/user.route.js"); // Adjust path accordingly
 const memberRoutes = require("./routes/member.route.js"); // Adjust path accordingly
 const coachesRoutes = require("./routes/coach.route.js"); // Adjust path accordingly
@@ -32,7 +31,6 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
 app.use(bodyParser.json());
 
 // temporary routes
@@ -41,9 +39,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
-app.use("/api/members", memberRoutes);
-app.use("/api/coaches", coachesRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/api/members", authMiddleware, memberRoutes);
+app.use("/api/coaches", authMiddleware, coachesRoutes);
+app.use("/api/messages", authMiddleware, messageRoutes);
 app.use("/api/feeds", authMiddleware, feedsRoutes);
 app.use("/api/search", authMiddleware, searchRoutes);
 app.use("/api/uploads", authMiddleware, uploadRoutes);

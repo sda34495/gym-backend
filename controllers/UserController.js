@@ -29,7 +29,12 @@ const signup = async (req, res) => {
     );
     res.status(201).json({
       message: "User created successfully",
-      user: { email: user.email, name: user.name, type: user.type },
+      user: {
+        email: user.email,
+        name: user.name,
+        type: user.type,
+        _id: user._id,
+      },
       token,
     });
   } catch (error) {
@@ -58,7 +63,12 @@ const login = async (req, res) => {
 
     res.status(200).json({
       token,
-      user: { email: user.email, name: user.name, type: user.type },
+      user: {
+        email: user.email,
+        name: user.name,
+        type: user.type,
+        _id: user._id,
+      },
       message: "Logged in successfully",
     });
   } catch (error) {
