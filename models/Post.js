@@ -24,21 +24,21 @@ const postSchema = new Schema(
       ],
       required: true,
     },
-    sport: {
-      type: [String], // Array of strings for relevant sports
-      required: true,
-    },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"], // 'Point' for GeoJSON location
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number],
-        required: true,
-      },
-    },
+    // sport: {
+    //   type: [String], // Array of strings for relevant sports
+    //   required: true,
+    // },
+    // location: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"], // 'Point' for GeoJSON location
+    //     default: "Point",
+    //   },
+    //   coordinates: {
+    //     type: [Number],
+    //     required: true,
+    //   },
+    // },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",

@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     sports: {
-      type: String,
+      type: [String],
     },
     isVerified: {
       type: Boolean,
