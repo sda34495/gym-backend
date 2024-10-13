@@ -58,11 +58,13 @@ const getMessages = async (req, res) => {
       .json({ message: "Failed to retrieve messages", error: error.message });
   }
 };
+
 const getMyMessages = async (req, res) => {
   try {
     const receiverId = req.userId;
 
     // Validate user ID
+    console.log("hello world..");
     const user = await User.findById(receiverId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -84,5 +86,5 @@ const getMyMessages = async (req, res) => {
 module.exports = {
   sendMessage,
   getMessages,
-  getMyMessages
+  getMyMessages,
 };
