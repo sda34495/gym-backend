@@ -12,7 +12,7 @@ const {
 router.get("/", getPublicListings);
 
 // Fetch user's listings
-router.get("/my", getMyListings);
+router.get("/my/", getMyListings);
 
 // Create a new listing
 router.post("/", createListing);
