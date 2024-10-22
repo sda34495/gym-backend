@@ -94,6 +94,9 @@ const coachSchema = new mongoose.Schema(
     profile_url: {
       type: String,
     },
+    isDeleted: {
+      type: String,
+    },
   },
   {
     timestamps: true,

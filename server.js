@@ -12,6 +12,7 @@ const messageRoutes = require("./routes/message.route.js");
 const feedsRoutes = require("./routes/feeds.route.js");
 const searchRoutes = require("./routes/search.route.js");
 const uploadRoutes = require("./routes/upload.route.js");
+const deleteRoutes = require("./routes/delete.route.js");
 const authMiddleware = require("./middlewares/authMiddleware.js");
 require("colors");
 
@@ -45,6 +46,7 @@ app.use("/api/messages", authMiddleware, messageRoutes);
 app.use("/api/feeds", authMiddleware, feedsRoutes);
 app.use("/api/search", authMiddleware, searchRoutes);
 app.use("/api/uploads", authMiddleware, uploadRoutes);
+app.use("/api/delete", authMiddleware, deleteRoutes);
 const PORT = process.env.PORT || 8081;
 
 app.listen(PORT, () => {
