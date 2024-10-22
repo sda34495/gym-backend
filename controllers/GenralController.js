@@ -6,7 +6,7 @@ const deleteResource = async (req, res) => {
     const gymId = req.userId;
     const { resource_id, resource_type } = req.body;
 
-    if (resource_type === "memeber") {
+    if (resource_type === "member") {
       const member = await Member.findById(resource_id);
       member.isDeleted = true;
       return res.status(200).json({ status: true });
