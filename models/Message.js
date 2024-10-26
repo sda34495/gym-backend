@@ -7,6 +7,10 @@ const messageSchema = new Schema({
     ref: "User",
     required: true,
   },
+  replyMessageId: {
+    type: Schema.Types.ObjectId,
+    ref: "Message",
+  },
   receiver: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -17,6 +21,10 @@ const messageSchema = new Schema({
     required: true,
   },
   read: {
+    type: Boolean,
+    default: false,
+  },
+  isReply: {
     type: Boolean,
     default: false,
   },

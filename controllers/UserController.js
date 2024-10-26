@@ -6,18 +6,19 @@ const signup = async (req, res) => {
   const { name, username, email, phone, password, type } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser.username == username) {
-      return res.status(400).json({ message: "UserName  already taken." });
-    }
-
-    if (existingUser.phone == phone) {
-      return res.status(400).json({ message: "Phone Number Already Exist." });
-    }
-
-    if (existingUser) {
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
       return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json({ message: "Phone number already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,6 +33,7 @@ const signup = async (req, res) => {
     });
 
     await user.save();
+
     const token = jwt.sign(
       { userId: user._id, type: user.type },
       "your_jwt_secret"
@@ -47,6 +49,7 @@ const signup = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server error", error });
   }
 };
