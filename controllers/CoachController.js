@@ -13,7 +13,7 @@ const createCoach = async (req, res) => {
     sport,
     location,
     isActive,
-    startDate
+    startDate,
   } = req.body;
   const gymId = req.userId;
   try {
@@ -30,7 +30,7 @@ const createCoach = async (req, res) => {
       sport,
       location,
       isActive,
-      startDate
+      startDate,
     });
 
     await coach.save();
@@ -43,7 +43,7 @@ const createCoach = async (req, res) => {
 const getCoaches = async (req, res) => {
   try {
     const gymId = req.userId;
-    const coaches = await Coach.find({ gymId: gymId });
+    const coaches = await Coach.find({ gymId: gymId, isDeleted: false });
     res.status(200).json(coaches);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

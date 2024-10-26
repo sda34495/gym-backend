@@ -69,7 +69,7 @@ const getPublicListings = async (req, res) => {
 const getMyListings = async (req, res) => {
   try {
     const userId = req.userId;
-    const myPosts = await Post.find({ userId });
+    const myPosts = await Post.find({ userId, isDeleted: false });
     res.status(200).json(myPosts);
   } catch (error) {
     res.status(500).json({ message: "Error fetching your listings", error });

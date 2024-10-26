@@ -95,7 +95,7 @@ const coachSchema = new mongoose.Schema(
       type: String,
     },
     isDeleted: {
-      type: String,
+      type: Boolean,
     },
   },
   {
