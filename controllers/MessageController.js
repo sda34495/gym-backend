@@ -4,7 +4,7 @@ const User = require("../models/User");
 
 const sendMessage = async (req, res) => {
   try {
-    const { receiverId, body } = req.body;
+    const { receiverId, body, subject } = req.body;
     const senderId = req.userId;
     const sender = await User.findById(senderId);
     const receiver = await User.findById(receiverId);
@@ -17,6 +17,7 @@ const sendMessage = async (req, res) => {
       sender: senderId,
       receiver: receiverId,
       body,
+      subject,
     });
 
     await message.save();
@@ -33,7 +34,7 @@ const sendMessage = async (req, res) => {
 
 const replyToMessage = async (req, res) => {
   try {
-    const { messageId, body } = req.body;
+    const { messageId, body, subject } = req.body;
     const senderId = req.userId;
     const originalMessage = await Message.findById(messageId);
 
@@ -49,6 +50,7 @@ const replyToMessage = async (req, res) => {
       body,
       replyMessageId: messageId,
       isReply: true,
+      subject: subject,
     });
 
     await replyMessage.save();
@@ -139,10 +141,12 @@ const getMyMessages = async (req, res) => {
           },
           body: 1,
           createdAt: 1,
+          subject: 1,
           // Include and rename replyMessageId to replyMessage
           replyMessage: {
             _id: "$replyMessage._id",
             body: "$replyMessage.body",
+            subject: "$replyMessage.subject",
             sender: {
               _id: "$replyMessage.sender",
               name: "$replyMessage.senderInfo.name",

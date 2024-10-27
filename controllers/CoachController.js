@@ -43,7 +43,11 @@ const createCoach = async (req, res) => {
 const getCoaches = async (req, res) => {
   try {
     const gymId = req.userId;
-    const coaches = await Coach.find({ gymId: gymId, isDeleted: false });
+    const coaches = await Coach.find({
+      gymId: gymId,
+      isDeleted: { $ne: true },
+    });
+
     res.status(200).json(coaches);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

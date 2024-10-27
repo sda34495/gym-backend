@@ -7,6 +7,9 @@ const messageSchema = new Schema({
     ref: "User",
     required: true,
   },
+  subject: {
+    type: String,
+  },
   replyMessageId: {
     type: Schema.Types.ObjectId,
     ref: "Message",
