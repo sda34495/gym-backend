@@ -114,8 +114,109 @@ const verifyOTPController = async (req, res) => {
   }
 };
 
+const approveUser = async (req, res) => {
+  try {
+    const { userId, action } = req.body;
+    
+    if (!userId || !['approve', 'reject'].includes(action)) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Invalid request parameters" 
+      });
+    }
+    
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: "User not found" 
+      });
+    }
+    
+    user.status = action === 'approve' ? 'approved' : 'rejected';
+    if (action === 'reject') {
+      user.rejectionDate = new Date();
+    }
+    
+    await user.save();
+    
+    res.json({ 
+      success: true,
+      message: `User ${action}d successfully`,
+      user 
+    });
+  } catch (error) {
+    console.error('Error in approveUser:', error);
+    res.status(500).json({ 
+      success: false,
+      message: "Server error",
+      error: error.message 
+    });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, '-password'); // Exclude the password field
+    
+    if (!users) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      users: users,
+      message: "Users fetched successfully"
+    });
+  } catch (error) {
+    console.error('Error to fetch Users:', error);
+    res.status(500).json({ 
+      success: false,
+      message: "Error fetching users",
+      error: error.message 
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false,
+        message: "User ID is required" 
+      });
+    }
+    
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: "User not found" 
+      });
+    }
+    
+    await User.findByIdAndDelete(userId);
+    
+    res.json({ 
+      success: true,
+      message: "User deleted successfully"
+    });
+  } catch (error) {
+    console.error('Error in deleteUser:', error);
+    res.status(500).json({ 
+      success: false,
+      message: "Server error",
+      error: error.message 
+    });
+  }
+};
+
 const signup = async (req, res) => {
-  const { name, username, email, phone, password, type } = req.body;
+  const { name, email, phone, password, type } = req.body;
 
   try {
     const existingEmail = await User.findOne({ email });
@@ -123,14 +224,20 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res.status(400).json({ message: "Username already taken" });
-    }
-
     const existingPhone = await User.findOne({ phone });
     if (existingPhone) {
       return res.status(400).json({ message: "Phone number already exists" });
+    }
+
+    // Check if the user was rejected within the last 2 days
+    const rejectedUser = await User.findOne({
+      $or: [{ email }, { phone }],
+      status: 'rejected',
+      rejectionDate: { $gte: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) }
+    });
+
+    if (rejectedUser) {
+      return res.status(400).json({ message: "Your account creation request was recently rejected. Please try again after 2 days." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -138,27 +245,23 @@ const signup = async (req, res) => {
     const user = new User({
       name,
       email,
-      username,
       phone,
       password: hashedPassword,
       type,
+      status: 'pending' 
     });
 
     await user.save();
 
-    const token = jwt.sign(
-      { userId: user._id, type: user.type },
-      process.env.JWT_SECRET
-    );
     res.status(201).json({
-      message: "User created successfully",
+      message: "User created successfully. Your account is pending approval.",
       user: {
         email: user.email,
         name: user.name,
         type: user.type,
         _id: user._id,
-      },
-      token,
+        status: user.status
+      }
     });
   } catch (error) {
     console.log(error);
@@ -172,12 +275,20 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Email does't exist." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Incorrect password." });
+    }
+
+    if (user.status === 'pending') {
+      return res.status(403).json({ message: "Your account is pending approval" });
+    }
+
+    if (user.status === 'rejected') {
+      return res.status(403).json({ message: "Your account has been rejected" });
     }
 
     const token = jwt.sign(
@@ -192,6 +303,7 @@ const login = async (req, res) => {
         name: user.name,
         type: user.type,
         _id: user._id,
+        status: user.status
       },
       message: "Logged in successfully",
     });
@@ -256,5 +368,9 @@ module.exports = {
   verifyOTPController,
   setNewPassword,
   requestOTP,
-  verifyPassword
+  verifyPassword,
+  getAllUsers,
+  approveUser,
+  deleteUser
 };
+

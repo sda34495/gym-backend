@@ -2,10 +2,13 @@ const express = require("express");
 const {
   sendMessage,
   getMyMessages,
-  replyToMessage
+  replyToMessage,
+  getConversation
 } = require("../controllers/MessageController");
 
 const router = express.Router();
+
+router.get("/conversation/:partnerId", getConversation);
 
 router.post("/", sendMessage);
 // router.get("/:userId", getMessages); // Retrieve messages for a user

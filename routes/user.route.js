@@ -8,10 +8,18 @@ const {
   requestOTP,
   verifyOTPController,
   verifyPassword,
+  getAllUsers,
+  approveUser,
+  deleteUser
 } = require("../controllers/UserController"); // Adjust the path
 const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
+
+router.get("/getAllUsers", authMiddleware, getAllUsers);
+router.post("/approve", authMiddleware, approveUser);
+router.post("/delete", authMiddleware, deleteUser);
+
 
 router.post("/signup", signup);
 router.put("/edit", authMiddleware, editUser);

@@ -2,33 +2,75 @@ const { default: mongoose } = require("mongoose");
 const Message = require("../models/Message");
 const User = require("../models/User");
 
+
+
+
+const getConversation = async (req, res) => {
+  try {
+    const userId = req.userId; // Assuming you have middleware that sets userId from the auth token
+    const partnerId = req.params.partnerId;
+
+    const messages = await Message.find({
+      $or: [
+        { sender: userId, receiver: partnerId },
+        { sender: partnerId, receiver: userId }
+      ]
+    }).sort({ createdAt: 1 }).populate('sender receiver', 'name');
+
+    res.status(200).json({ success: true, data: messages });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching conversation", error: error.message });
+  }
+};
+
+// const sendMessage = async (req, res) => {
+//   try {
+//     const { receiverId, body, subject } = req.body;
+//     const senderId = req.userId;
+//     const sender = await User.findById(senderId);
+//     const receiver = await User.findById(receiverId);
+
+//     if (!sender || !receiver) {
+//       return res.status(404).json({ message: "Sender or receiver not found" });
+//     }
+
+//     const message = new Message({
+//       sender: senderId,
+//       receiver: receiverId,
+//       body,
+//       subject,
+//     });
+
+//     await message.save();
+
+//     res
+//       .status(201)
+//       .json({ message: "Message sent successfully", data: message });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Failed to send message", error: error.message });
+//   }
+// };
+
 const sendMessage = async (req, res) => {
   try {
-    const { receiverId, body, subject } = req.body;
+    const { receiverId, body } = req.body;
     const senderId = req.userId;
-    const sender = await User.findById(senderId);
-    const receiver = await User.findById(receiverId);
 
-    if (!sender || !receiver) {
-      return res.status(404).json({ message: "Sender or receiver not found" });
-    }
-
-    const message = new Message({
+    const newMessage = new Message({
       sender: senderId,
       receiver: receiverId,
       body,
-      subject,
     });
 
-    await message.save();
+    await newMessage.save();
 
-    res
-      .status(201)
-      .json({ message: "Message sent successfully", data: message });
+    const populatedMessage = await Message.findById(newMessage._id).populate('sender receiver', 'name');
+
+    res.status(201).json({ success: true, data: populatedMessage });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to send message", error: error.message });
+    res.status(500).json({ success: false, message: "Error sending message", error: error.message });
   }
 };
 
@@ -228,4 +270,5 @@ module.exports = {
   getMyMessages,
   replyToMessage,
   readMessage,
+  getConversation
 };

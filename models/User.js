@@ -7,11 +7,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     email: {
       type: String,
       required: true,
@@ -30,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["GYM", "PROMOTION"],
+      enum: ["GYM", "PROMOTION","ADMIN"],
     },
     logo: {
       type: String,
@@ -50,10 +45,24 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+ 
+    status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
   },
-  {
-    timestamps: true,
+  rejectionDate: {
+    type: Date
   }
+},
+
+{
+  timestamps: true,
+}
 );
 
 const User = mongoose.model("User", userSchema);

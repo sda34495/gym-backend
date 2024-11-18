@@ -43,6 +43,7 @@ const createMember = async (req, res) => {
     res.status(201).json({ message: "Member created successfully", member });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
+    console.log('server error is : ', error.message)
   }
 };
 
